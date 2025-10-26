@@ -1,42 +1,58 @@
-__Relatório de Sessão__
+# Relatório de Sessão
 
-Inspirado no artigo de John Bach sobre Session\-Based Test Management \(2001\)
+*Inspirado no artigo de John Bach sobre Session-Based Test Management (2001)*
 
-__Data e Hora do Início__
+---
 
-__Nome do Testador__
+## 📅 Data e Hora do Início
+26 de outubro de 2025, 12:57 PM
 
-__Módulo__
+## 👤 Nome do Testador
+Geison Sousa de Oliveira
 
-26 de outubro de 2025 12:57 PM
+## 🧩 Módulo
+Cadastro
 
-Geison Sousa de oliveira
+---
 
-Cadastro 
+## 🎯 Test Charter
+Explorar a funcionalidade de cadastro de usuário para verificar se a API consegue registrar novos usuários corretamente, validando conformidade com os requisitos funcionais e regras de negócio.
 
-__Test Charter:  
-__Explorar a funcionalidade de cadastro de usuário para verificar se a API consegue registrar novos usuários corretamente, validando conformidade com os requisitos funcionais e regras de negócio\.
+**Heurística utilizada:** `CVDLTSCR`  
+**Objetivo:** Descobrir se a API consegue registrar novo usuário conforme os requisitos.
 
-*Com* a Heurística __CVDLTSCR__
+---
 
-*Para descobrir* se a API consegue registrar novo usuário conforme os requisitos
+## ⏱ Tamanho da Sessão
+20 minutos
 
-__Tamanho da Sessão:  
-20__ minutos
+---
 
-__Notas\*:__
+## 📝 Notas
+> ⚠️ \*Podem ser **Informações (I)** ou **Riscos (R)**
 
-__\(I\)\. __Não há limites máximo de caracteres para os campos nome e senha, podendo gerar \(Quebra de layout / Falhas de Banco de Dados / Vulnerabilidades de Segurança\.\.\.\)
+1. (I) Não há limites máximos de caracteres para os campos **nome** e **senha**, podendo gerar:
+   - Quebra de layout  
+   - Falhas de banco de dados  
+   - Vulnerabilidades de segurança  
 
-*\(\*\) Podem ser \(I\)nformações ou \(R\)iscos\.*
+---
 
-__Defeitos:__
+## 🐞 Defeitos Identificados
 
-1. Ao cadastrar um novo usuário, o sistema permite que o campo de __nome__ receba números,caracteres especiais, o que não é condizente com as regras de validação esperadas\. Mesmo inserindo esses dados, o cadastro é concluído com sucesso e o servidor retorna __status 201 \(Created\)__\.
+1. **Validação de campos inadequada:**  
+   Ao cadastrar um novo usuário, o sistema permite que o campo **nome** receba números e caracteres especiais, o que não condiz com as regras de validação esperadas. Mesmo com esses dados, o cadastro é concluído com sucesso e o servidor retorna **status 201 (Created)**.
 
-2 \.Ao tentar cadastrar um novo usuário \(POST /api/auth/cadastro\) usando um formato JSON que contenha um payload de __injeção de NoSQL__, o cadastro é __realizado__ e a API retorna o __status 201 \(Created\)\.__
+2. **Falha de segurança – injeção NoSQL:**  
+   Ao tentar cadastrar um novo usuário (`POST /api/auth/cadastro`) com payload de **injeção NoSQL**, o cadastro é **realizado** e a API retorna **status 201 (Created)**.
 
-__Perguntas:__
+---
 
-1. Deveria conter uma quantidade máxima de caracteres?
+## ❓ Perguntas / Observações
+
+1. O campo **nome** deveria ter uma quantidade máxima de caracteres?
+
+---
+
+
 
