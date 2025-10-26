@@ -1,0 +1,26 @@
+{
+  "name": "barbearia-api",
+  "version": "1.0.0",
+  "description": "API REST para agendamento de barbearia com autenticação JWT e documentação Swagger",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Barbearia API",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-validator": "^6.15.0",
+    "jsonwebtoken": "^9.0.0",
+    "sequelize": "^6.32.1",
+    "sqlite3": "^5.1.6",
+    "swagger-ui-express": "^4.6.3",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

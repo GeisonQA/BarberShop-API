@@ -1,0 +1,250 @@
+openapi: 3.0.1
+info:
+  title: Barbearia - API de Agendamento
+  version: 1.0.0
+  description: API REST para agendamento de barbearia. Inclui autenticação JWT, CRUD de agendamentos, listagem de barbeiros e serviços.
+servers:
+  - url: http://localhost:3000
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        email:
+          type: string
+
+paths:
+  /api/auth/cadastro:
+    post:
+      summary: Cadastro de novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nome,email,senha]
+              properties:
+                nome: { type: string }
+                email: { type: string }
+                senha: { type: string }
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+        '400':
+          description: Dados inválidos
+        '409':
+          description: Email já cadastrado
+
+  /api/auth/login:
+    post:
+      summary: Autenticação e retorno do token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email,senha]
+              properties:
+                email: { type: string }
+                senha: { type: string }
+      responses:
+        '200':
+          description: Login bem-sucedido — retorna token
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Credenciais inválidas
+
+  /api/barbeiros:
+    get:
+      summary: Lista barbeiros
+      responses:
+        '200':
+          description: Lista de barbeiros
+    post:
+      summary: Cria barbeiro (autenticado)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome: { type: string }
+      responses:
+        '201':
+          description: Barbeiro criado
+        '401':
+          description: Não autenticado
+
+  /api/servicos:
+    get:
+      summary: Lista serviços
+      description: |
+        Serviços fixos disponíveis:
+        - Barba — 20,00 R$
+        - Barba + Limpeza de pele — 35,00 R$
+        - Barba + Pigmentação — 32,00 R$
+        - Barba + Sobrancelha — 28,00 R$
+        - Corte — 30,00 R$
+        - Corte + Barba — 50,00 R$
+        - Corte + Barba + Limpeza de Pele — A consultar
+        - Corte + Barba + Pigmentação — 62,00 R$
+      responses:
+        '200':
+          description: Lista de serviços
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    nome: { type: string }
+                    duracaoMinutos: { type: integer }
+                    preco:
+                      oneOf:
+                        - type: number
+                        - type: 'null'
+                      description: Valor do serviço em R$ (null para "A consultar")
+              examples:
+                exemplo:
+                  value:
+                    - id: 1
+                      nome: Barba
+                      duracaoMinutos: 20
+                      preco: 20.00
+                    - id: 2
+                      nome: Barba + Limpeza de pele
+                      duracaoMinutos: 40
+                      preco: 35.00
+                    - id: 3
+                      nome: Barba + Pigmentação
+                      duracaoMinutos: 35
+                      preco: 32.00
+                    - id: 4
+                      nome: Barba + Sobrancelha
+                      duracaoMinutos: 30
+                      preco: 28.00
+                    - id: 5
+                      nome: Corte
+                      duracaoMinutos: 30
+                      preco: 30.00
+                    - id: 6
+                      nome: Corte + Barba
+                      duracaoMinutos: 60
+                      preco: 50.00
+                    - id: 7
+                      nome: Corte + Barba + Limpeza de Pele
+                      duracaoMinutos: 70
+                      preco: null
+                    - id: 8
+                      nome: Corte + Barba + Pigmentação
+                      duracaoMinutos: 75
+                      preco: 62.00
+    post:
+      summary: Cria serviço (autenticado)
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Serviço criado
+
+  /api/agendamentos:
+    post:
+      summary: Cria agendamento (autenticado)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [barbeiroId,servicoId,data]
+              properties:
+                barbeiroId: { type: integer }
+                servicoId: { type: integer }
+                data: { type: string, format: date-time }
+                observacoes: { type: string }
+      responses:
+        '201':
+          description: Agendamento criado
+        '400':
+          description: Dados inválidos
+        '401':
+          description: Não autenticado
+
+    get:
+      summary: Lista agendamentos do usuário autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de agendamentos
+
+  /api/agendamentos/{id}:
+    get:
+      summary: Detalha agendamento do usuário
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Agendamento retornado
+        '403':
+          description: Acesso proibido (não é dono do agendamento)
+        '404':
+          description: Agendamento não encontrado
+
+    put:
+      summary: Atualiza agendamento (apenas dono)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Agendamento atualizado
+
+    delete:
+      summary: Remove agendamento (apenas dono)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Agendamento removido com sucesso (sem conteúdo)
+        '403':
+          description: Proibido
+        '404':
+          description: Não encontrado
