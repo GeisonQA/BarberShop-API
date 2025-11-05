@@ -37,7 +37,7 @@ async function seedInitial() {
       { nome: 'Barba + Sobrancelha', duracaoMinutos: 30, preco: 28.00 },
       { nome: 'Corte', duracaoMinutos: 30, preco: 30.00 },
       { nome: 'Corte + Barba', duracaoMinutos: 60, preco: 50.00 },
-      { nome: 'Corte + Barba + Limpeza de Pele', duracaoMinutos: 70, preco: null },
+      { nome: 'Corte + Barba + Limpeza de Pele', duracaoMinutos: 70, preco: 65.00 },
       { nome: 'Corte + Barba + Pigmentação', duracaoMinutos: 75, preco: 62.00 }
     ]);
   }
